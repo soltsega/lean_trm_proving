@@ -1,36 +1,50 @@
 # Case study: safe natural-number division
 
-## Problem
+## Problem and contract
 
-Integer division by zero is an error in many programming languages. A caller
-that receives a denominator from a file, user, or computation must handle that
-case. This case study implements a small total API: given natural numbers
-`numerator` and `denominator`, return the floor quotient when the denominator is
-positive and return no value when it is zero.
+Division needs an explicit policy for a zero denominator. This API accepts
+natural numbers and returns `none` when the denominator is zero. For a positive
+denominator, it returns the natural-number floor quotient. Using `Option Nat`
+makes the zero case visible in the result type instead of relying on an
+exception or an undocumented precondition.
 
 ## Implementations
 
-`LeanImpl.lean` defines `safeDiv : Nat → Nat → Option Nat`. Its `Option` result
-makes the zero-denominator case explicit. The file proves that zero produces
-`none`, every nonzero denominator produces the expected quotient, and `none`
-occurs exactly for a zero denominator.
+`LeanImpl.lean` defines `safeDiv : Nat → Nat → Option Nat`. Its theorems show
+that a zero denominator returns `none`, that a nonzero denominator returns the
+Lean quotient, that a `some` result can occur only for a nonzero denominator
+and has the specified quotient, and that `none` occurs exactly at zero.
+Together these describe the wrapper's behavior for all natural-number inputs.
 
-`python_impl.py` implements the same behavior with `None` as the missing result
-and Python's `//` for floor division. Since Python integers include negatives
-but Lean's `Nat` does not, the Python function rejects negative arguments. Run
-`python python_impl.py` to execute representative examples and bounded checks
-against the quotient contract.
+`python_impl.py` implements the same wrapper behavior using Python's `//` and
+`None`. Python integers also include negative values, so the implementation
+rejects them to match Lean's `Nat` domain. Run the checks from the repository
+root with:
 
-## What formal verification adds
+```sh
+python -m unittest discover -s task-2-case-study -p "test_*.py"
+```
 
-The Python checks exercise selected inputs (including all pairs below 20), but
-they cannot establish behavior for every natural number. The Lean theorems are
-universally quantified: they prove the zero/nonzero branch behavior for all
-numerators and denominators, based on the definition. This does not prove the
-Python implementation correct or establish performance; the Python checks are
-still useful as an executable cross-check of its translation.
+The dynamic tests include zero and negative inputs, examples, and quotient
+bounds for a finite range. As with any finite test set, they do not establish
+the behavior for every input.
 
-## Reproduction
+## What is and is not formally verified
 
-From this directory, run `python python_impl.py`. With Lean 4 installed, check
-the formal file with `lean LeanImpl.lean`.
+Lean checks the proofs against the definitions and its kernel. The results
+cover every natural-number input to `safeDiv` and establish which `Option`
+branch it returns and what value it contains. The quotient operation itself
+comes from Lean's natural-number division; this case study does not implement a
+division algorithm or prove a separate quotient/remainder characterization.
+
+The proofs do not verify the Python translation, Python's runtime, or
+performance. The Python tests are a useful independent check of the intended
+translation, but they cannot inherit Lean's proof guarantees. This distinction
+is important: the formal result applies to the Lean definition and the
+theorems stated here, not automatically to every implementation of the same
+idea.
+
+## Check the Lean file
+
+From the repository root, run `lean task-2-case-study/LeanImpl.lean` with Lean
+4 installed. The root README documents commands for both assignment tasks.
