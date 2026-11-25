@@ -1,4 +1,4 @@
-"""Executable Python counterpart to the Lean safe-division definition."""
+﻿"""Executable Python counterpart to the Lean safe-division definition."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Dynamic checks for the Python safe-division counterpart."""
+﻿"""Dynamic checks for the Python safe-division counterpart."""
 
 import unittest
 

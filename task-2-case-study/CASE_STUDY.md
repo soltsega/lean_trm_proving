@@ -1,4 +1,4 @@
-# Case study: safe natural-number division
+﻿# Case study: safe natural-number division
 
 ## Problem and contract
 

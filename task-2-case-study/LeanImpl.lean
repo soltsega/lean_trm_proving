@@ -1,4 +1,4 @@
-/-!
+﻿/-!
 # Safe division case study
 
 `safeDiv n d` returns `none` when `d` is zero and otherwise returns the

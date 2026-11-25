@@ -1,4 +1,4 @@
-# Lean 4 Formal Verification Assignment
+﻿# Lean 4 Formal Verification Assignment
 
 This repository contains two exercises in formal reasoning and program
 contracts.
